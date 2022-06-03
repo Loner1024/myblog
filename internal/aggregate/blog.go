@@ -6,3 +6,8 @@ type Blog struct {
 	entity.Article
 	Tags []entity.Tag
 }
+
+type BlogList struct {
+	Blogs         []Blog
+	NextPageToken string
+}
