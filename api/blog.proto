@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package blog.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Loner1024/uniix.io/api/gen/v1";
+
+
+service BlogService {
+  rpc GetArticle (GetArticleRequest) returns (Article){}
+  rpc ListArticle (ListArticleRequest) returns (ListArticleResponse) {}
+}
+
+message GetArticleRequest {
+  string id = 1;
+}
+
+message Article {
+  string id = 1;
+  string title = 2;
+  string content = 3;
+  google.protobuf.Timestamp create_time = 4;
+  google.protobuf.Timestamp update_time = 5;
+  repeated Tag tags = 6;
+}
+
+
+message ListArticleRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListArticleResponse {
+  repeated Article articles = 1;
+  string next_page_token = 2;
+}
+
+message Tag {
+  string id = 1;
+  string tag = 2;
+}
+
