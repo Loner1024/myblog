@@ -12,15 +12,26 @@ import (
 	"github.com/Loner1024/uniix.io/internal/server"
 	"github.com/Loner1024/uniix.io/internal/services"
 	"github.com/Loner1024/uniix.io/internal/store/firebase"
-	"go.uber.org/zap"
+	"github.com/Loner1024/uniix.io/logger"
 )
 
 // Injectors from wire.go:
 
-func wireApp(config configs.Config, sugaredLogger *zap.SugaredLogger) (*server.Server, error) {
-	repo := firebase.NewStore()
+func wireApp() (*server.Server, error) {
+	config, err := configs.InitConfigs()
+	if err != nil {
+		return nil, err
+	}
+	repo, err := firebase.NewStore(config)
+	if err != nil {
+		return nil, err
+	}
 	useCase := blog.NewUseCase(repo)
 	service := services.NewService(useCase)
+	sugaredLogger, err := logger.New(config)
+	if err != nil {
+		return nil, err
+	}
 	serverServer := server.NewServer(service, config, sugaredLogger)
 	return serverServer, nil
 }

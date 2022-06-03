@@ -37,7 +37,6 @@ message ListArticleResponse {
 }
 
 message Tag {
-  string id = 1;
-  string tag = 2;
+  string Value = 2;
 }
 

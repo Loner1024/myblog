@@ -2,7 +2,6 @@ package entity
 
 import (
 	"errors"
-	"github.com/google/uuid"
 )
 
 var (
@@ -10,8 +9,7 @@ var (
 )
 
 type Tag struct {
-	ID  uuid.UUID
-	Tag string
+	Value string
 }
 
 func NewTag(tag string) (Tag, error) {
@@ -19,7 +17,6 @@ func NewTag(tag string) (Tag, error) {
 		return Tag{}, ErrTagEmpty
 	}
 	return Tag{
-		ID:  uuid.New(),
-		Tag: tag,
+		Value: tag,
 	}, nil
 }

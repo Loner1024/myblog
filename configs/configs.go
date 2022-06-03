@@ -1,12 +1,18 @@
 package configs
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
-	"log"
 )
 
 type Config struct {
-	GRPC `yaml:"grpc"`
+	App      `yaml:"app"`
+	GRPC     `yaml:"grpc"`
+	Firebase `yaml:"firebase"`
+}
+
+type App struct {
+	Name string `yaml:"name"`
 }
 
 type GRPC struct {
@@ -14,16 +20,20 @@ type GRPC struct {
 	Port string `yaml:"port"`
 }
 
-func InitConfigs() Config {
+type Firebase struct {
+	AgentFile string `yaml:"agentFile"`
+}
+
+func InitConfigs() (Config, error) {
 	viper.SetConfigName("configs")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("configs")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("init config error:%v", err)
+		return Config{}, fmt.Errorf("init config error:%v", err)
 	}
 	var configs Config
 	if err := viper.Unmarshal(&configs); err != nil {
-		log.Fatalf("init config error:%v", err)
+		return Config{}, err
 	}
-	return configs
+	return configs, nil
 }

@@ -3,19 +3,20 @@
 package logger
 
 import (
+	"github.com/Loner1024/uniix.io/configs"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 // New constructs a Sugared Logger that writes to stdout and
 // provides human-readable timestamps.
-func New(service string) (*zap.SugaredLogger, error) {
+func New(conf configs.Config) (*zap.SugaredLogger, error) {
 	config := zap.NewProductionConfig()
 	config.OutputPaths = []string{"stdout"}
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	config.DisableStacktrace = true
 	config.InitialFields = map[string]any{
-		"service": service,
+		"service": conf.App.Name,
 	}
 	
 	log, err := config.Build()

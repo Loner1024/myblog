@@ -76,7 +76,6 @@ func tagSliceToDTO(data []entity.Tag) []*v1.Tag {
 
 func tagToDTO(data entity.Tag) *v1.Tag {
 	return &v1.Tag{
-		Id:  data.ID.String(),
-		Tag: data.Tag,
+		Value: data.Value,
 	}
 }
