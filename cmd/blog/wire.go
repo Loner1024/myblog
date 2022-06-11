@@ -14,5 +14,5 @@ import (
 )
 
 func wireApp() (*server.Server, error) {
-	panic(wire.Build(configs.ProviderSet, logger.New, server.ProviderSet, blog.ProviderSet, services.ProviderSet, firebase.NewStore))
+	panic(wire.Build(configs.ProviderSet, logger.New, server.ProviderSet, blog.ProviderSet, services.ProviderSet, firebase.ProviderSet))
 }

@@ -63,8 +63,34 @@ func (s Store) GetBlog(ctx context.Context, ID uuid.UUID) (aggregate.Blog, error
 }
 
 func (s Store) ListBlog(ctx context.Context, limit, offset int64) ([]aggregate.Blog, error) {
-	// TODO implement me
-	panic("implement me")
+	docs := s.store.Collection(ArticleCollection).
+		Select("Title", "UpdateTime", "Tags", "CreateTime").
+		Limit(int(limit)).
+		Offset(int(offset)).
+		Documents(ctx)
+	
+	doc, err := docs.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	result := make([]aggregate.Blog, 0, limit+1)
+	for _, v := range doc {
+		var articleDoc ArticleDoc
+		err = v.DataTo(&articleDoc)
+		if err != nil {
+			return nil, err
+		}
+		tags := make([]entity.Tag, len(articleDoc.Tags))
+		for i := 0; i < len(tags); i++ {
+			paths := strings.Split(articleDoc.Tags[i].Path, "/")
+			tags[i] = entity.Tag{Value: paths[len(paths)-1]}
+		}
+		result = append(result, aggregate.Blog{
+			Article: articlDocToEntityArticle(uuid.MustParse(v.Ref.ID), articleDoc),
+			Tags:    tags,
+		})
+	}
+	return result, nil
 }
 
 func (s Store) CountBlog(ctx context.Context) (int64, error) {
