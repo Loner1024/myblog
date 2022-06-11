@@ -47,14 +47,8 @@ func (s Store) GetBlog(ctx context.Context, ID uuid.UUID) (aggregate.Blog, error
 	tags := make([]entity.Tag, 0, len(articleDoc.Tags)+1)
 	tagDocRefToEntityTag(articleDoc.Tags, &tags)
 	return aggregate.Blog{
-		Article: entity.Article{
-			ID:         ID,
-			Title:      articleDoc.Title,
-			Content:    articleDoc.Content,
-			CreateTime: articleDoc.CreateTime,
-			UpdateTime: articleDoc.UpdateTime,
-		},
-		Tags: tags,
+		Article: articlDocToEntityArticle(ID, articleDoc),
+		Tags:    tags,
 	}, nil
 }
 
