@@ -57,6 +57,7 @@ func (s Store) ListBlog(ctx context.Context, limit, offset int64) ([]aggregate.B
 		Select("Title", "UpdateTime", "Tags", "CreateTime").
 		Limit(int(limit)).
 		Offset(int(offset)).
+		OrderBy("CreateTime", firestore.Desc).
 		Documents(ctx)
 	
 	doc, err := docs.GetAll()
