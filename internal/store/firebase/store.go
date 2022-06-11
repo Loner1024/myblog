@@ -10,7 +10,6 @@ import (
 	"github.com/Loner1024/uniix.io/internal/entity"
 	"github.com/google/uuid"
 	"google.golang.org/api/option"
-	"strings"
 	"time"
 )
 
@@ -45,11 +44,8 @@ func (s Store) GetBlog(ctx context.Context, ID uuid.UUID) (aggregate.Blog, error
 	if err != nil {
 		return aggregate.Blog{}, err
 	}
-	tags := make([]entity.Tag, len(articleDoc.Tags))
-	for i := 0; i < len(tags); i++ {
-		paths := strings.Split(articleDoc.Tags[i].Path, "/")
-		tags[i] = entity.Tag{Value: paths[len(paths)-1]}
-	}
+	tags := make([]entity.Tag, 0, len(articleDoc.Tags)+1)
+	tagDocRefToEntityTag(articleDoc.Tags, &tags)
 	return aggregate.Blog{
 		Article: entity.Article{
 			ID:         ID,
@@ -80,11 +76,8 @@ func (s Store) ListBlog(ctx context.Context, limit, offset int64) ([]aggregate.B
 		if err != nil {
 			return nil, err
 		}
-		tags := make([]entity.Tag, len(articleDoc.Tags))
-		for i := 0; i < len(tags); i++ {
-			paths := strings.Split(articleDoc.Tags[i].Path, "/")
-			tags[i] = entity.Tag{Value: paths[len(paths)-1]}
-		}
+		tags := make([]entity.Tag, 0, len(articleDoc.Tags)+1)
+		tagDocRefToEntityTag(articleDoc.Tags, &tags)
 		result = append(result, aggregate.Blog{
 			Article: articlDocToEntityArticle(uuid.MustParse(v.Ref.ID), articleDoc),
 			Tags:    tags,
