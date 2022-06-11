@@ -73,3 +73,25 @@ func TestGetBlog(t *testing.T) {
 	}
 	t.Logf("%+v\n", blog)
 }
+
+func TestListBlog(t *testing.T) {
+	if runtime.GOOS != "darwin" {
+		t.Skip("skip local test code")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	defer func() {
+		if err := ctx.Err(); err != nil {
+			t.Errorf("ctx timeout: %v", err)
+		}
+		cancel()
+	}()
+	store, err := NewStore(conf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	blogs, err := store.ListBlog(ctx, 10, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("%+v", blogs)
+}
